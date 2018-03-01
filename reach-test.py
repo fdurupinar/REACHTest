@@ -65,7 +65,7 @@ def plot_performance():
     plt.show()
 
 
-send_reach_queries_for_abstracts('performance.txt', 20)
+send_reach_queries_for_abstracts('performance.txt', 200)
 # plot_performance()
 
 
