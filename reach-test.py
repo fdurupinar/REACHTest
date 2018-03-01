@@ -2,6 +2,7 @@ import requests
 import json
 import time
 import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
 from pmArticles import PM
 import urllib
 
@@ -35,7 +36,7 @@ def send_reach_query(msg):
         if(json_obj and 'cards' in json_obj):
             card_len = len(json_obj['cards'])
 
-        return {'length': card_len, 'time': ts1-ts0}
+        return {'textSize': len(msg), 'cardLength': card_len, 'runTime': ts1-ts0}
 
     except requests.exceptions.RequestException as e:
         print('Could not connect to REACH service:')
@@ -58,18 +59,34 @@ def send_reach_queries_for_abstracts(file, max_cnt):
                 break
 
     with open(file, "w") as f:
+        f.write('Text size\t#Index cards\tTime(secs)\n')
+
         for perf in performances:
-            f.write(str(perf['length']) + "\t" + str(perf['time']) + '\n')
+            f.write(str(perf['textSize']) + "\t" + str(perf['cardLength']) + "\t" + str(perf['runTime']) + '\n')
 
 
-def plot_performance():
+def plot_performance(file):
 
+    performances = []
+    with open(file) as f:
+        lines = f.readlines()
+
+        for i in range(1, len(lines)):
+
+            words = lines[i].split('\t')
+            performances.append({'textSize': float(words[0])*0.001, 'cardLength': int(words[1].strip()), 'runTime': float(words[2])})
+
+    print performances
+    ax = plt.axes(projection='3d')
+    ax.set_xlabel('Text size (kb)')
+    ax.set_ylabel('# index cards')
+    ax.set_zlabel('Run time (sec)')
     for perf in performances:
-        plt.plot(perf['length'], perf['time'] , 'o', label='Fitted line')
+        ax.scatter3D(perf['textSize'],perf['cardLength'],  perf['runTime'],   c = 'red', cmap='Greens');
+
     plt.show()
-
-
-send_reach_queries_for_abstracts('performance.txt', 200)
+plot_performance('performance.txt')
+# send_reach_queries_for_abstracts('performance.txt', 500)
 # plot_performance()
 
 
