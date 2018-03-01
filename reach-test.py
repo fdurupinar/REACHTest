@@ -3,10 +3,11 @@ import json
 import time
 import matplotlib.pyplot as plt
 from pmArticles import PM
+import urllib
 
 
 
-reach_text_url = 'http://localhost:8080/api/text'
+reach_text_url = 'http://localhost:8080/api/textBody'
 # reach_text_url = 'http://agathon.sista.arizona.edu:8080/odinweb/api/text'
 performances = []
 
@@ -14,21 +15,20 @@ pm = PM('')
 
 def send_reach_query(msg):
 
-    # url = reach_text_url + '?text= ' + msg.encode('utf-8') + '&output=indexcard'
-    url = reach_text_url  #+ '?text= ' + msg.encode('utf-8') + '&output=indexcard'
+    url = reach_text_url
 
     data = {'text': msg.encode('utf-8'), 'output':'indexcard'}
-    # print(json.dumps(data))
-    # print(data)
+
+    # data = urllib.urlencode(data)
+
 
     try:
         ts0 = time.time()
-        res = requests.post(url, data)
+        res = requests.post(url, data=data)
         ts1 = time.time()
 
         json_str = res.content
         card_len = 0
-        # try:
         json_obj = json.loads(json_str)
 
 
@@ -36,8 +36,6 @@ def send_reach_query(msg):
             card_len = len(json_obj['cards'])
 
         return {'length': card_len, 'time': ts1-ts0}
-        # except:
-        #     return {'length': 0, 'time': ts1-ts0}
 
     except requests.exceptions.RequestException as e:
         print('Could not connect to REACH service:')
