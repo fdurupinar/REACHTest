@@ -5,8 +5,9 @@ import matplotlib.pyplot as plt
 from pmArticles import PM
 
 
-# reach_text_url = 'http://localhost:9090/api/text'
-reach_text_url = 'http://agathon.sista.arizona.edu:8080/odinweb/api/text'
+
+reach_text_url = 'http://localhost:8080/api/text'
+# reach_text_url = 'http://agathon.sista.arizona.edu:8080/odinweb/api/text'
 performances = []
 
 pm = PM('')
@@ -25,13 +26,17 @@ def send_reach_query(msg):
         ts1 = time.time()
 
         json_str = res.content
-        json_obj = json.loads(json_str)
-
         card_len = 0
-        if(json_obj and 'cards' in json_obj):
-            card_len = len(json_obj['cards'])
+        try:
+            json_obj = json.loads(json_str)
 
-        return {'length': card_len, 'time': ts1-ts0}
+
+            if(json_obj and 'cards' in json_obj):
+                card_len = len(json_obj['cards'])
+
+            return {'length': card_len, 'time': ts1-ts0}
+        except:
+            return {'length': 0, 'time': ts1-ts0}
 
     except requests.exceptions.RequestException as e:
         print('Could not connect to REACH service:')
