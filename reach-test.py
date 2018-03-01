@@ -23,21 +23,21 @@ def send_reach_query(msg):
 
     try:
         ts0 = time.time()
-        res = requests.post(url, data=data)
+        res = requests.post(url, data)
         ts1 = time.time()
 
         json_str = res.content
         card_len = 0
-        try:
-            json_obj = json.loads(json_str)
+        # try:
+        json_obj = json.loads(json_str)
 
 
-            if(json_obj and 'cards' in json_obj):
-                card_len = len(json_obj['cards'])
+        if(json_obj and 'cards' in json_obj):
+            card_len = len(json_obj['cards'])
 
-            return {'length': card_len, 'time': ts1-ts0}
-        except:
-            return {'length': 0, 'time': ts1-ts0}
+        return {'length': card_len, 'time': ts1-ts0}
+        # except:
+        #     return {'length': 0, 'time': ts1-ts0}
 
     except requests.exceptions.RequestException as e:
         print('Could not connect to REACH service:')
