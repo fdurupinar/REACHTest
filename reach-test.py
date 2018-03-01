@@ -14,15 +14,16 @@ pm = PM('')
 
 def send_reach_query(msg):
 
-    url = reach_text_url + '?text= ' + msg.encode('utf-8') + '&output=indexcard'
+    # url = reach_text_url + '?text= ' + msg.encode('utf-8') + '&output=indexcard'
+    url = reach_text_url  #+ '?text= ' + msg.encode('utf-8') + '&output=indexcard'
 
-    # data = {'text': msg.encode('utf-8'), 'output':'indexcard'}
+    data = {'text': msg.encode('utf-8'), 'output':'indexcard'}
     # print(json.dumps(data))
     # print(data)
 
     try:
         ts0 = time.time()
-        res = requests.post(url)
+        res = requests.post(url, data=data)
         ts1 = time.time()
 
         json_str = res.content
