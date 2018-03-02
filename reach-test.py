@@ -45,15 +45,17 @@ def send_reach_query(msg):
 
 
 
-def send_reach_queries_for_abstracts(file, max_cnt):
+def send_reach_queries_for_text(file, text_type, max_cnt):
 
     with pm.db:
         cur = pm.db.cursor()
-        abstracts = cur.execute("SELECT Abstract FROM Pubmed").fetchall()
+        query = "SELECT " + text_type + " FROM Pubmed"
+        fields = cur.execute(query).fetchall()
         i = 0
-        for abstract in abstracts:
-            perf = send_reach_query(abstract[0])
-            performances.append(perf)
+        for field in fields:
+            if len(field[0]) > 1:
+                perf = send_reach_query(field[0])
+                performances.append(perf)
             i += 1
             if i >= max_cnt:
                 break
@@ -63,6 +65,7 @@ def send_reach_queries_for_abstracts(file, max_cnt):
 
         for perf in performances:
             f.write(str(perf['textSize']) + "\t" + str(perf['cardLength']) + "\t" + str(perf['runTime']) + '\n')
+
 
 
 def plot_performance(file):
@@ -85,8 +88,12 @@ def plot_performance(file):
         ax.scatter3D(perf['textSize'],perf['cardLength'],  perf['runTime'],   c = 'red', cmap='Greens');
 
     plt.show()
-plot_performance('performance.txt')
+
+# plot_performance('performance.txt')
+plot_performance('performancePapers.txt')
 # send_reach_queries_for_abstracts('performance.txt', 500)
+# send_reach_queries_for_text('performance.txt', "Abstract", 500)
+# send_reach_queries_for_text('performancePapers.txt', "WholeText", 500)
 # plot_performance()
 
 

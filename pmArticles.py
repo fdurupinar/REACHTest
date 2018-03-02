@@ -9,8 +9,6 @@ pm_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi'
 
 converter_url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0'
 
-pmc_url = 'https://www.ncbi.nlm.nih.gov/utils/oa/oa.fcgi?'
-# pmc_url = 'https://www.ncbi.nlm.nih.gov/pmc/articles'
 
 
 abstracts = []
@@ -41,8 +39,6 @@ class PM:
 
                 text = self.send_pmc_query(pmc_id[0].encode("utf8"))
                 text = self._cleanhtml(text)
-
-
 
                 abstract = self.send_pm_query(id, 'pubmed', 'abstract')
                 cur.execute("INSERT INTO Pubmed VALUES(?, ?, ?, ?, ?)",
@@ -99,7 +95,7 @@ class PM:
             # print res.content[s0:s1]
             return res.content[s0:s1]
 
-        except Exceptio as e:
+        except Exception as e:
             print e
 
     def _cleanhtml(self, raw_html):
